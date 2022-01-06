@@ -17,7 +17,7 @@ This is for simple host user
   
 # Install K8S on Ubutu 24.04 desktop
   ## Command lists
-  -
+  -  
 
 
 
