@@ -66,7 +66,7 @@ This is to install k8s on Ubuntu 20.04
     }
     EOF
     $ service docker restart
-    $ kubeadmin init
+    $ kubeadm init
     $ sudo docker info | grep -i cgroup      // for double check for cgroup
   ## Step 6: Deploy Pod Network to Cluster
 	  sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
@@ -75,9 +75,26 @@ This is to install k8s on Ubuntu 20.04
 	  kubectl get pods --all-namespaces
 
   ## Step 8: Join Worker Node to Cluster
-	   // try "kubeadm join" at the master node side, it gives some command to be run at the worker node	  
-     // at the worker node side
-	  kubeadm join --discovery-token abcdef.1234567890abcdef --discovery-token-ca-cert-hash sha256:1234..cdef 1.2.3.4:6443
+    -Info source : m.blog.naver.com/zippy/222073632636
+    //------------- master node
+	  -To join master node as worker node, it need to be joined.
+     "kubeadm join"  needs parameters( token , hash value)
+    // get YOUR_TOKEN
+    $ kubeadm token list
+
+    // create YOUR_TOKEN if not exists
+    $ kubeadm token create
+
+    // get HASH_VALUE
+    $ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+    
+    // get INERNAL_IP
+    $kubectl get nodes -o wide               // to get INTERNAL_IP
+
+    //--------- worker node
+    //ex> $ kubeadm join 192.168.123.232:6443 --discovery-token abcdef.1234567890abcdef --discovery-token-ca-cert-hash sha256:1234..cdef 1.2.3.4:6443
+    
+    $ kubeadm join INERNAL_IP:6443 --discovery-token YOUR_TOKEN --discovery-token-ca-cert-hash sha256:HASH_VALUE
 
   ## Step 10: checking
 	  - kubectl get nodes 
