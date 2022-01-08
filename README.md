@@ -98,6 +98,19 @@ This is to install k8s on Ubuntu 20.04
 
   ## Step 10: checking
 	  - kubectl get nodes 
+
+# Cluster management issues
+  ## 1 Case 1 : Master node shutdown and restated,  worker node can not be seen ?
+     //-- master node side    
+     - check worker node is running or not using "ping to worker node"
+     - access via telnet or ssh
+
+     //-- work node side    
+     - sudo systemctl status kubelet           // checking kubelet is working or not
+     - sudo systemctl restart kubelet
+     
+     //-- master node side    
+     - kubectl get nodes -o wide
     
 # Other stuffers
   ## Uninstall docker
